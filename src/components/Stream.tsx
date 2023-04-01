@@ -15,6 +15,7 @@ import useDebounce, { getNewStreamrClient } from '@/utils';
 import { AppContext } from '@/pages/_app';
 import { ProfileFragment } from '@lens-protocol/client';
 import { Message } from './Message';
+import toast, { Toaster } from 'react-hot-toast';
 
 export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
   const { data: signer } = useSigner();
@@ -31,7 +32,7 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
 
   const [addressToBeAddedToGroup, setAddressToBeAddedToGroup] = useState('');
 
-  const [lensProfileSearchQuery, setLensProfileSearchQuery] = useState('');
+  const [lensProfileSearchQuery, setLensProfileSearchQuery] = useState('nader');
   const debouncedLensProfileSearchQuery = useDebounce(lensProfileSearchQuery);
   const [lensProfileSearchResults, setLensProfileSearchResults] = useState<
     ProfileFragment[]
@@ -57,6 +58,10 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
         console.log(client);
         setStreamrClient(client);
 
+        toast.loading('Fetching stream...', {
+          duration: 3000,
+        });
+
         const stream = await client.getOrCreateStream({
           id: streamId,
         });
@@ -77,6 +82,7 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
               },
             ],
           });
+          toast.success('Stream created!');
         }
       }
     })();
@@ -98,6 +104,7 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
           }
         );
         setSubscribed(true);
+        toast.success('Subscribed to stream!');
       }
     })();
   }, [stream]);
@@ -125,6 +132,9 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
       };
       await stream.grantPermissions(permissions);
       console.log('permissions granted');
+      toast.success(
+        'Lens handle added to the group! Share the stream ID with them to invite them to the group chat!'
+      );
     }
   };
 
@@ -148,6 +158,7 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
 
   return (
     <>
+      <Toaster />
       <div>
         <h3>Currently connected to stream ID {streamId}</h3>
 
@@ -193,13 +204,16 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
             <div className='flex flex-col gap-2'>
               {lensProfileSearchResults.map((profile) => {
                 return (
-                  <div className='flex flex-row gap-2' key={profile.id}>
-                    <span>{profile.handle}</span>
+                  <div
+                    className='flex flex-row items-center gap-2 mt-2'
+                    key={profile.id}
+                  >
+                    <span className='font-bold text-xl'>{profile.handle}</span>
                     <button
                       onClick={() => addNewAddressToGroup(profile.ownedBy)}
-                      className='p-2 border-2 rounded'
+                      className='px-2 border-2 rounded'
                     >
-                      Add
+                      + Add
                     </button>
                   </div>
                 );
@@ -210,7 +224,7 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
 
         <hr />
 
-        <h3>Grant permissions</h3>
+        {/* <h3>Grant permissions</h3>
         <input
           value={addressToBeAddedToGroup}
           onChange={(e) => setAddressToBeAddedToGroup(e.target.value)}
@@ -222,7 +236,7 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
           className='p-2 border-2 rounded'
         >
           Add
-        </button>
+        </button> */}
       </div>
     </>
   );

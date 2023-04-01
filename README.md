@@ -21,7 +21,7 @@ This is what a typical user journey looks like:
 
 ## Todos / Ideas
 
-- [ ] Add support for multiple groups
+- [ ] Store a list of all the streams created by the user (and the ones they are a part of) somewhere. This will let them easily switch between streams instead of having to remember and type in the stream ID every time. This is a major UX issue.
 - [ ] Add support for group chat invites via links
 - [ ] Add support for media sharing via IPFS/Arweave
 - [ ] Think of a notification layer
@@ -52,4 +52,3 @@ I have already reported these issues in the `#dev` channel on the Streamr Discor
 - Often times, the Streamr SDK repetitively requests for message signatures when it tries to subscribe to a stream and has to _decode_ messages sent by other accounts. It eventually then throws an error saying that the decode operation has timed out. It does not happen every time, but it happens often enough to be a problem. I have tried to debug this issue but I have not been able to find the root cause yet. This is a major issue because it makes the app unusable since it cannot decode messages sent by other accounts. It also causes everything to be super inconsistent and buggy. I wasn't able to fix this issue in time for the hackathon submission deadline.
 - The stream creation flow is not very intuitive. After connecting your Metamask wallet, you will be taken to a default public stream. From here on at the top, you would have to manually type in a stream ID in this format: `<your_address>/stream/name` and click 'Set Stream' for things to work.
 - Keyboard shortcuts don't work. For example, pressing `Enter` does not send a message. You have to click the 'Send' button.
-- There are no success or error 'toast' notifications. For example, when you create a new stream, there is no indication that the stream was created successfully.
