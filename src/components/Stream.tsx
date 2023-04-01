@@ -2,11 +2,15 @@ interface StreamProps {
   streamId: string;
 }
 
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
 import { FC, useContext, useEffect, useState } from 'react';
 import { useAccount, useSigner } from 'wagmi';
-import { PermissionAssignment, Stream, StreamPermission } from 'streamr-client';
+import {
+  PermissionAssignment,
+  STREAMR_STORAGE_NODE_GERMANY,
+  Stream,
+  StreamPermission,
+} from 'streamr-client';
 import { getNewStreamrClient } from '@/utils';
 import { AppContext } from '@/pages/_app';
 
@@ -39,24 +43,43 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
           id: streamId,
         });
         setStream(stream);
+
+        const isStoredStream = await client.isStoredStream(
+          stream.id,
+          STREAMR_STORAGE_NODE_GERMANY
+        );
+        if (!isStoredStream) {
+          await stream.addToStorageNode(STREAMR_STORAGE_NODE_GERMANY);
+        }
       }
     })();
-  }, [window, signer]);
+  }, [window, signer, streamId]);
 
   useEffect(() => {
-    if (streamrClient && stream && !subscribed) {
-      streamrClient.subscribe(stream.id, (message) => {
-        console.log(message);
-        setMessages((messages) => [...messages, message]);
-      });
-      setSubscribed(true);
-    }
+    (async () => {
+      if (streamrClient && stream && !subscribed) {
+        await streamrClient.subscribe(
+          {
+            id: stream.id,
+            resend: {
+              last: 10,
+            },
+          },
+          (message) => {
+            console.log(message);
+            setMessages((messages) => [...messages, message]);
+          }
+        );
+        setSubscribed(true);
+      }
+    })();
   }, [stream]);
 
   const handleNewMessagePublish = async () => {
     if (streamrClient && stream) {
       await stream.publish({
         message: newMessage,
+        author: currentlyConnectedUserAddress,
       });
       setNewMessage('');
     }

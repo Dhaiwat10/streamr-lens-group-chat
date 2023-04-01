@@ -10,18 +10,23 @@ import { StreamComponent } from './Stream';
 const TEST_STREAM_ID = '0xA2AF948C508311e1D24270649d770cF4d4F5D0B5/test/stream';
 
 export default () => {
-  const [streamId, setStreamId] = useState('');
+  const [streamIdInputValue, setStreamIdInputValue] = useState('');
+  const [streamIdToBePassedDown, setStreamIdToBePassedDown] = useState('');
 
   return (
     <div>
       <ConnectButton />
       <input
-        value={streamId}
-        onChange={(e) => setStreamId(e.target.value)}
+        value={streamIdInputValue}
+        onChange={(e) => setStreamIdInputValue(e.target.value)}
         placeholder='Stream ID'
       />
 
-      <StreamComponent streamId={streamId || TEST_STREAM_ID} />
+      <button onClick={() => setStreamIdToBePassedDown(streamIdInputValue)}>
+        Set Stream ID
+      </button>
+
+      <StreamComponent streamId={streamIdToBePassedDown || TEST_STREAM_ID} />
     </div>
   );
 };
