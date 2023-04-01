@@ -165,7 +165,12 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
         <hr className='mt-2' />
 
         <div className='flex p-20 gap-12'>
-          <div className='flex flex-col gap-2 w-9/12 my-12'>
+          <div className='flex flex-col gap-4 w-9/12 my-12'>
+            {messages.length === 0 && subscribed && (
+              <p className='text-gray-500'>
+                No messages yet. Start the conversation!
+              </p>
+            )}
             {messages.map((message) => {
               return (
                 <Message message={message.message} author={message.author} />
