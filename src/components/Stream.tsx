@@ -14,6 +14,7 @@ import {
 import useDebounce, { getNewStreamrClient } from '@/utils';
 import { AppContext } from '@/pages/_app';
 import { ProfileFragment } from '@lens-protocol/client';
+import { Message } from './Message';
 
 export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
   const { data: signer } = useSigner();
@@ -58,6 +59,15 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
         );
         if (!isStoredStream) {
           await stream.addToStorageNode(STREAMR_STORAGE_NODE_GERMANY);
+          await streamrClient?.setPermissions({
+            streamId,
+            assignments: [
+              {
+                public: true,
+                permissions: [StreamPermission.SUBSCRIBE],
+              },
+            ],
+          });
         }
       }
     })();
@@ -129,33 +139,65 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
 
   return (
     <>
-      <h1>Chat page</h1>
-
       <div>
-        <h3>Stream id: {streamId}</h3>
+        <h3>Currently connected to stream ID {streamId}</h3>
 
-        {messages.map((message) => {
-          return (
-            <div>
-              <pre>{JSON.stringify(message, null, 2)}</pre>
+        <hr className='mt-2' />
+
+        <div className='flex p-20 gap-12'>
+          <div className='flex flex-col gap-2 w-9/12 my-12'>
+            {messages.map((message) => {
+              return (
+                <Message message={message.message} author={message.author} />
+              );
+            })}
+
+            <hr />
+
+            <textarea
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              className='p-2 border-2 rounded'
+              placeholder='Type your message here'
+            />
+
+            <button
+              onClick={handleNewMessagePublish}
+              className='p-2 border-2 rounded text-white bg-blue-700'
+            >
+              Send
+            </button>
+          </div>
+
+          <div className='ml-auto w-3/12'>
+            <h3 className='text-2xl font-bold'>☘️ Search Lens Profiles</h3>
+            <p>
+              Search for your friends on Lens and add them to this group chat!
+            </p>
+            <input
+              value={lensProfileSearchQuery}
+              onChange={(e) => setLensProfileSearchQuery(e.target.value)}
+              className='p-2 border-2 rounded w-full'
+              placeholder='Type a Lens handle eg. dhaiwat.lens'
+            />
+
+            <div className='flex flex-col gap-2'>
+              {lensProfileSearchResults.map((profile) => {
+                return (
+                  <div className='flex flex-row gap-2' key={profile.id}>
+                    <span>{profile.handle}</span>
+                    <button
+                      onClick={() => addNewAddressToGroup(profile.ownedBy)}
+                      className='p-2 border-2 rounded'
+                    >
+                      Add
+                    </button>
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
-
-        <hr />
-
-        <textarea
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          className='p-2 border-2 rounded'
-        />
-
-        <button
-          onClick={handleNewMessagePublish}
-          className='p-2 border-2 rounded'
-        >
-          Send
-        </button>
+          </div>
+        </div>
 
         <hr />
 
@@ -172,32 +214,6 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
         >
           Add
         </button>
-
-        <hr />
-
-        <h3>Add Lens profile</h3>
-        <input
-          value={lensProfileSearchQuery}
-          onChange={(e) => setLensProfileSearchQuery(e.target.value)}
-          className='p-2 border-2 rounded'
-          placeholder='dhaiwat.lens'
-        />
-
-        <div className='flex flex-col gap-2'>
-          {lensProfileSearchResults.map((profile) => {
-            return (
-              <div className='flex flex-row gap-2' key={profile.id}>
-                <span>{profile.handle}</span>
-                <button
-                  onClick={() => addNewAddressToGroup(profile.ownedBy)}
-                  className='p-2 border-2 rounded'
-                >
-                  Add
-                </button>
-              </div>
-            );
-          })}
-        </div>
       </div>
     </>
   );

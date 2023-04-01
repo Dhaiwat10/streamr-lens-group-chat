@@ -1,6 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useSigner } from 'wagmi';
-import StreamrProvider from 'streamr-client-react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
@@ -17,7 +16,8 @@ export default function Home() {
 
   return (
     <main>
-      <h1>woot woot</h1>
+      <h1 className='text-4xl font-bold'>Lens x Streamr Group Chat</h1>
+      <p>Connect your wallet to get started.</p>
       <ConnectButton />
     </main>
   );
