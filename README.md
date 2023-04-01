@@ -19,15 +19,6 @@ This is what a typical user journey looks like:
 5. User shares the stream ID of their group chat with their friends.
 6. User's friends can now join the group chat by visiting the site and entering the stream ID of the group chat.
 
-## Current issues
-
-I have already reported these issues in the `#dev` channel on the Streamr Discord server but I am listing them here as well.
-
-- Often times, the Streamr SDK repetitively requests for message signatures when it tries to subscribe to a stream and has to _decode_ messages sent by other accounts. It eventually then throws an error saying that the decode operation has timed out. It does not happen every time, but it happens often enough to be a problem. I have tried to debug this issue but I have not been able to find the root cause yet. This is a major issue because it makes the app unusable since it cannot decode messages sent by other accounts.
-- The stream creation flow is not very intuitive. After connecting your Metamask wallet, you will be taken to a default public stream. From here on at the top, you would have to manually type in a stream ID in this format: `<your_address>/stream/name` and click 'Set Stream' for things to work.
-- Keyboard shortcuts don't work. For example, pressing `Enter` does not send a message. You have to click the 'Send' button.
-- There are no success or error 'toast' notifications. For example, when you create a new stream, there is no indication that the stream was created successfully.
-
 ## Todos / Ideas
 
 - [ ] Add support for multiple groups
@@ -53,3 +44,12 @@ I have already reported these issues in the `#dev` channel on the Streamr Discor
 2. Run `npm install`
 3. Run `npm run dev`
 4. Connect your Metamask wallet to the site.
+
+## Current issues
+
+I have already reported these issues in the `#dev` channel on the Streamr Discord server but I am listing them here as well.
+
+- Often times, the Streamr SDK repetitively requests for message signatures when it tries to subscribe to a stream and has to _decode_ messages sent by other accounts. It eventually then throws an error saying that the decode operation has timed out. It does not happen every time, but it happens often enough to be a problem. I have tried to debug this issue but I have not been able to find the root cause yet. This is a major issue because it makes the app unusable since it cannot decode messages sent by other accounts. It also causes everything to be super inconsistent and buggy. I wasn't able to fix this issue in time for the hackathon submission deadline.
+- The stream creation flow is not very intuitive. After connecting your Metamask wallet, you will be taken to a default public stream. From here on at the top, you would have to manually type in a stream ID in this format: `<your_address>/stream/name` and click 'Set Stream' for things to work.
+- Keyboard shortcuts don't work. For example, pressing `Enter` does not send a message. You have to click the 'Send' button.
+- There are no success or error 'toast' notifications. For example, when you create a new stream, there is no indication that the stream was created successfully.

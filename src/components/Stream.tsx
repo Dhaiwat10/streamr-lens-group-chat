@@ -41,9 +41,18 @@ export const StreamComponent: FC<StreamProps> = ({ streamId }) => {
     return null;
   }
 
+  const cleanUp = () => {
+    setStreamrClient(undefined);
+    setStream(undefined);
+    setMessages([]);
+    setNewMessage('');
+    setSubscribed(false);
+  };
+
   useEffect(() => {
     (async () => {
       if (window.ethereum && signer) {
+        cleanUp();
         const client = getNewStreamrClient();
         console.log(client);
         setStreamrClient(client);
