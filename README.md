@@ -4,6 +4,11 @@ This project is a humble attempt at creating a group chat app powered by Streamr
 
 Deployed at https://streamr-lens-group-chat.vercel.app/
 
+## Tech used
+
+- `streamr-client` for interacting with the Streamr network
+- `@lens-protocol/client` for fetching data from Lens Protocol
+
 ## How to run locally
 
 1. Clone the repo
